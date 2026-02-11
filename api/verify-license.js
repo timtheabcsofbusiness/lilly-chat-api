@@ -5,21 +5,34 @@ export default async function handler(req, res) {
 
   const { license_key } = req.body;
 
-  const response = await fetch("https://api.gumroad.com/v2/licenses/verify", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      product_id: process.env.GUMROAD_PRODUCT_ID,
-      license_key,
-      api_key: process.env.GUMROAD_API_KEY
-    })
-  });
-
-  const data = await response.json();
-
-  if (data.success && data.purchase.subscription_cancelled_at === null) {
-    return res.status(200).json({ authorized: true });
+  if (!license_key) {
+    return res.status(400).json({ error: "License key required" });
   }
 
-  return res.status(401).json({ authorized: false });
+  try {
+    const response = await fetch("https://api.gumroad.com/v2/licenses/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        product_id: process.env.GUMROAD_PRODUCT_ID,
+        license_key: license_key
+      })
+    });
+
+    const data = await response.json();
+
+    // Active subscription check
+    if (
+      data.success &&
+      data.purchase &&
+      data.purchase.subscription_cancelled_at === null
+    ) {
+      return res.status(200).json({ authorized: true });
+    }
+
+    return res.status(401).json({ authorized: false });
+
+  } catch (err) {
+    return res.status(500).json({ error: "Verification failed" });
+  }
 }
