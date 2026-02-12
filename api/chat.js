@@ -19,6 +19,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // BEFORE calling OpenAI
+
+  const authHeader = req.headers["x-lilly-auth"];
+  
+  if (!authHeader || authHeader !== process.env.LILLY_CHAT_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  
+  //
+  
   try {
     const isFirstMessage = !req.body.history || req.body.history.length === 0;
 
