@@ -1,4 +1,15 @@
 export default async function handler(req, res) {
+
+  // ✅ Allow Webflow origin
+  res.setHeader("Access-Control-Allow-Origin", "https://talkwithlilly.webflow.io");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // ✅ Handle preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -15,13 +26,12 @@ export default async function handler(req, res) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         product_id: process.env.GUMROAD_PRODUCT_ID,
-        license_key: license_key
+        license_key
       })
     });
 
     const data = await response.json();
 
-    // Active subscription check
     if (
       data.success &&
       data.purchase &&
