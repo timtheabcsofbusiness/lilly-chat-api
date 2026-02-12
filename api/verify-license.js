@@ -3,7 +3,10 @@ export default async function handler(req, res) {
   // ✅ Allow Webflow origin
   res.setHeader("Access-Control-Allow-Origin", "https://talkwithlilly.webflow.io");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, x-lilly-auth"
+  );
 
   // ✅ Handle preflight request
   if (req.method === "OPTIONS") {
