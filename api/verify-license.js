@@ -41,9 +41,10 @@ export default async function handler(req, res) {
       data.purchase.subscription_cancelled_at === null
     ) {
       return res.status(200).json({
-  authorized: true,
-  token: process.env.LILLY_CHAT_SECRET
-});
+        authorized: true,
+        token: process.env.LILLY_CHAT_SECRET,
+        full_name: data.purchase.full_name || ""
+      });
     }
 
     return res.status(401).json({ authorized: false });
