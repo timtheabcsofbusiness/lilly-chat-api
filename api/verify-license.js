@@ -43,7 +43,8 @@ export default async function handler(req, res) {
       return res.status(200).json({
         authorized: true,
         token: process.env.LILLY_CHAT_SECRET,
-        full_name: data.purchase.full_name || ""
+        full_name: data.purchase.full_name || "",
+        license_key: data.purchase.license_key
       });
     }
 
