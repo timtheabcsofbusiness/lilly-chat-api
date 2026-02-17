@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
 
   // ✅ Allow Webflow origin
-  res.setHeader("Access-Control-Allow-Origin", "https://talkwithlilly.net");
+  res.setHeader("Access-Control-Allow-Origin", "https://www.talkwithlilly.net");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
