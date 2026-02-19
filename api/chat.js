@@ -140,9 +140,56 @@ Sound like a steady friend sitting across the table. Calm. Simple. Grounded. Pre
       max_output_tokens: 200
     });
 
+    // MEMORY UPDATE CALL
+    const assistantReply = response.output_text || "Hi — I’m here.";
+
+    let updatedMemory = req.body.memory || "";
+
+    try {
+      const memoryResponse = await client.responses.create({
+        model: "gpt-4.1-mini",
+        input: [
+          {
+            role: "system",
+            content: `
+    Update the user profile summary.
+    
+    Rules:
+    - Keep only durable facts.
+    - Remove temporary emotions.
+    - Keep it concise.
+    - Under 500 words.
+    - Neutral tone.
+    `
+          },
+          {
+            role: "user",
+            content: `
+    Existing memory:
+    ${req.body.memory || "None"}
+    
+    New exchange:
+    User: ${req.body.message}
+    Assistant: ${assistantReply}
+    
+    Return the updated memory summary only.
+    `
+          }
+        ],
+        max_output_tokens: 300
+      });
+    
+      updatedMemory = memoryResponse.output_text || updatedMemory;
+    
+    } catch (err) {
+      console.error("Memory update failed:", err);
+    }
+
+    // FINAL RESPONSE
     res.status(200).json({
-      reply: response.output_text || "Hi — I’m here."
-    });
+    reply: assistantReply,
+    updatedMemory
+  });
 
   } catch (err) {
     console.error("API ERROR:", err);
