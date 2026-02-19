@@ -115,6 +115,13 @@ Sound like a steady friend sitting across the table. Calm. Simple. Grounded. Pre
       }
     ];
 
+    if (req.body.memory) {
+      messages.push({
+        role: "system",
+        content: `User Profile Summary:\n\n${req.body.memory}`
+      });
+    }
+
     if (isFirstMessage) {
       messages.push({
         role: "assistant",
